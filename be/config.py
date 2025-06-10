@@ -1,14 +1,18 @@
+from pydantic import Field
 from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    auth0_domain: str
-    auth0_api_audience: str
-    auth0_issuer: str
-    auth0_algorithms: str
+    auth0_domain: str = Field(..., alias="AUTH0_DOMAIN")
+    auth0_api_audience: str = Field(..., alias="AUTH0_API_AUDIENCE")
+    auth0_issuer: str = Field(..., alias="AUTH0_ISSUER")
+    auth0_algorithms: str = Field(..., alias="AUTH0_ALGORITHMS")
 
-    class Config:
-        env_file = ".env"
+    model_config = {
+        "env_file": "be/.env",
+        "populate_by_name": True,
+    }
 
 
 settings = Settings()  # type: ignore
+print(settings)

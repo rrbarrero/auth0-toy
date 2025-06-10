@@ -1,9 +1,19 @@
 from fastapi import FastAPI, Security
 from config import settings
+from fastapi.middleware.cors import CORSMiddleware
+
 from common.auth.verfy_token import VerifyToken
 
 app = FastAPI()
 auth = VerifyToken(settings)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins="http://localhost:3000",
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/api/public")

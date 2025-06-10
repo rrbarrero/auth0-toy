@@ -51,7 +51,7 @@ class VerifyToken:
                 signing_key,
                 algorithms=self.settings.auth0_algorithms,
                 audience=self.settings.auth0_api_audience,
-                issuer=self.settings.auth0_issuer,
+                issuer=f"https://{self.settings.auth0_issuer}/",
             )
         except Exception as error:
             raise UnauthorizedException(str(error))

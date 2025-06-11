@@ -17,10 +17,10 @@ app.add_middleware(
 
 def admin_validator(payload: dict = Depends(auth.verify)):
     """
-    Acepta el 'payload' ya validado por VerifyToken y comprueba el rol.
+    Accept the payload already validated by VerifyToken and verify the role.
     """
     if payload.get(settings.role_claim) != "admin":
-        raise HTTPException(status_code=403, detail="Acceso denegado")
+        raise HTTPException(status_code=403, detail="Access denied")
     return payload
 
 

@@ -1,7 +1,6 @@
-from fastapi import FastAPI, Security
+from fastapi import Depends, FastAPI, HTTPException, Security
 from config import settings
 from fastapi.middleware.cors import CORSMiddleware
-
 from common.auth.verfy_token import VerifyToken
 
 app = FastAPI()
@@ -14,6 +13,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+def admin_validator(payload: dict = Depends(auth.verify)):
+    """
+    Acepta el 'payload' ya validado por VerifyToken y comprueba el rol.
+    """
+    if payload.get(settings.role_claim) != "admin":
+        raise HTTPException(status_code=403, detail="Acceso denegado")
+    return payload
 
 
 @app.get("/api/public")
@@ -38,6 +46,17 @@ def private(auth_result: str = Security(auth.verify)):
 
 @app.get("/api/private-scoped")
 def private_scoped(auth_result: str = Security(auth.verify, scopes=["read:messages"])):
+    """A valid access token and an appropriate scope are required to access
+    this route
+    """
+
+    return auth_result
+
+
+@app.get("/api/private-scoped-admin")
+def private_scoped_admin(
+    auth_result: str = Security(admin_validator, scopes=["read:messages"])
+):
     """A valid access token and an appropriate scope are required to access
     this route
     """

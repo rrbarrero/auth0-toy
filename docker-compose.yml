@@ -1,0 +1,26 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: ops/be/dockerfile
+    ports:
+      - "8001:8001"
+    networks:
+      - webnet
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ops/fe/dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - webnet
+    environment:
+      NODE_ENV: production
+    command: sh -c "npm run dev"
+
+networks:
+  webnet:

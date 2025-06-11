@@ -4,6 +4,7 @@ import './App.css'
 import LoginButton from './components/LoginButton'
 import LogoutButton from './components/LogoutButton'
 import Profile from './components/Profile'
+import AdminProfile from './components/AdminProfile'
 
 function App() {
   return (
@@ -20,6 +21,10 @@ function App() {
       <div className='card'>
         <Profile />
       </div>
+      <div className='card'>
+        <Profile />
+      </div>
+      <AdminProfile />
       <div className='card'>
         <LoginButton />
         <LogoutButton />

@@ -47,7 +47,7 @@ graph TD
     H --> L[GET&nbsp;/api/private-scoped-admin]
     L --> M{VerifyToken and role admin?}
     M -->|yes| N["200 OK admin JSON"]
-    M -->|no|  O[403 Forbidden]
+    M -->|no| O[403 Forbidden]
 ```
 ---
 

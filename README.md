@@ -21,33 +21,33 @@ Otherwise the card shows a friendly “Only admins can see this card.” message
 ## Flow
 ```mermaid
 graph TD
-    %% ───────────  SPA  ───────────
+    %% =====  SPA  =====
     subgraph SPA
-        A[User clicks "Log&nbsp;in"] --> B[/Auth0Provider<br/>→ /authorize/]
+        A[User clicks Log in] --> B[Auth0Provider to /authorize]
     end
 
-    %% ───────────  Auth0  ───────────
+    %% =====  Auth0  =====
     subgraph Auth0
         B --> C[Auth0 Universal Login]
         C --> D{User authenticates}
-        D --> E[Redirect with<br/>code + state]
-        E --> F[SPA exchanges code<br/>for tokens (PKCE)]
-        F --> G[Post-Login Action<br/>adds <i>role</i> claim]
+        D --> E[Redirect back with code and state]
+        E --> F[SPA exchanges code for tokens PKCE]
+        F --> G[Post-login Action adds role claim]
     end
 
-    %% ───────────  Tokens  ───────────
-    F --> H[(Access + ID tokens)]
+    %% =====  Tokens  =====
+    F --> H((Access & ID tokens))
 
     %% normal protected call
-    H --> I[/GET /api/private/]
-    I --> J{FastAPI<br/>VerifyToken}
+    H --> I[GET&nbsp;/api/private]
+    I --> J{FastAPI VerifyToken}
     J --> K[200 OK]
 
     %% admin-only call
-    H --> L[/GET /api/private-scoped-admin/]
-    L --> M{VerifyToken<br/>+ role = admin?}
-    M -->|yes| N[200 OK (admin JSON)]
-    M -->|no | O[403 Forbidden]
+    H --> L[GET&nbsp;/api/private-scoped-admin]
+    L --> M{VerifyToken and role admin?}
+    M -->|yes| N[200 OK admin JSON]
+    M -->|no|  O[403 Forbidden]
 ```
 ---
 

@@ -1,81 +1,23 @@
-class AuthApiClient {
-  private apiUrl: string
-  private userToken: string
+export default class AuthApiClient {
+  private base: string
+  private token: string
 
-  constructor(baseUrl: string, token: string) {
-    this.apiUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl
-    this.userToken = token
+  constructor(base: string, token: string) {
+    this.base = base
+    this.token = token
   }
 
-  public async getPrivateData(): Promise<unknown> {
-    const endpoint = `${this.apiUrl}/api/private`
-
-    try {
-      const response = await fetch(endpoint, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.userToken}`,
-        },
-      })
-
-      if (!response.ok) {
-        let errorMessage = `Http error: ${response.status} ${response.statusText}`
-        try {
-          const errorData = await response.json()
-          if (errorData.detail) {
-            errorMessage = `Api error: ${errorData.detail} (status: ${response.status})`
-          } else {
-            errorMessage = `Api error: ${JSON.stringify(errorData)} (status: ${response.status})`
-          }
-        } catch (jsonError) {
-          console.error('Error couldnt be parsed:', jsonError)
-        }
-        throw new Error(errorMessage)
-      }
-
-      const data = await response.json()
-      return data
-    } catch (error) {
-      console.error('Error al obtener datos privados:', error)
-      throw error //
-    }
+  async getPrivateData() {
+    return this.request('/api/private')
   }
-
-  public async getScopedAdmin(): Promise<unknown> {
-    const endpoint = `${this.apiUrl}/api/private-scoped-admin`
-
-    try {
-      const response = await fetch(endpoint, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.userToken}`,
-        },
-      })
-
-      if (!response.ok) {
-        let errorMessage = `Http error: ${response.status} ${response.statusText}`
-        try {
-          const errorData = await response.json()
-          if (errorData.detail) {
-            errorMessage = `Api error: ${errorData.detail} (status: ${response.status})`
-          } else {
-            errorMessage = `Api error: ${JSON.stringify(errorData)} (status: ${response.status})`
-          }
-        } catch (jsonError) {
-          console.error('Error couldnt be parsed:', jsonError)
-        }
-        throw new Error(errorMessage)
-      }
-
-      const data = await response.json()
-      return data
-    } catch (error) {
-      console.error('Error al obtener datos privados:', error)
-      throw error //
-    }
+  async getScopedAdmin() {
+    return this.request('/api/private-scoped-admin')
+  }
+  private async request(path: string) {
+    const r = await fetch(`${this.base}${path}`, {
+      headers: { Authorization: `Bearer ${this.token}` },
+    })
+    if (!r.ok) throw new Error(`Backend error ${r.status}`)
+    return r.json()
   }
 }
-
-export default AuthApiClient

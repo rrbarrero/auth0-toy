@@ -1,36 +1,27 @@
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import LoginButton from './components/LoginButton'
-import LogoutButton from './components/LogoutButton'
-import Profile from './components/Profile'
-import AdminProfile from './components/AdminProfile'
+import { useAuth0 } from '@auth0/auth0-react'
+import './styles.css'
+import ProfileCard from './components/ProfileCard'
 
-function App() {
+export default function App() {
+  const { loginWithRedirect, logout, isAuthenticated } = useAuth0()
+
   return (
-    <>
-      <div>
-        <a href='https://vite.dev' target='_blank'>
-          <img src={viteLogo} className='logo' alt='Vite logo' />
-        </a>
-        <a href='https://react.dev' target='_blank'>
-          <img src={reactLogo} className='logo react' alt='React logo' />
-        </a>
+    <main>
+      <h1>Auth0 + FastAPI PoC</h1>
+
+      <div className='grid'>
+        <ProfileCard title='User Profile' fetcher={api => api.getPrivateData()} />
+
+        <ProfileCard title='Admin Profile (claim admin)' fetcher={api => api.getScopedAdmin()} requireAdmin />
       </div>
-      <h1>React+Auth0</h1>
-      <div className='card'>
-        <Profile />
+
+      <div className='actions'>
+        {!isAuthenticated ? (
+          <button onClick={() => loginWithRedirect()}>Log in</button>
+        ) : (
+          <button onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}>Log out</button>
+        )}
       </div>
-      <div className='card'>
-        <Profile />
-      </div>
-      <AdminProfile />
-      <div className='card'>
-        <LoginButton />
-        <LogoutButton />
-      </div>
-    </>
+    </main>
   )
 }
-
-export default App

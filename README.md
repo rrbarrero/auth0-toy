@@ -21,37 +21,33 @@ Otherwise the card shows a friendly “Only admins can see this card.” message
 ## Flow
 ```mermaid
 graph TD
-    subgraph Frontend (React SPA)
-        A[User clicks “Log in”] --> B[/Auth0Provider<br/>calls /authorize/]
-        B --> F[[Auth0<br/>Universal Login]]
+    %% ───────────  SPA  ───────────
+    subgraph SPA
+        A[User clicks "Log&nbsp;in"] --> B[/Auth0Provider<br/>→ /authorize/]
     end
 
+    %% ───────────  Auth0  ───────────
     subgraph Auth0
-        F --> C{User authenticates}
-        C -->|Success| D[Auth0 redirects back<br/>with  `code` + `state`]
-        D --> E[/SPA exchanges code<br/>for tokens (PKCE)/]
-        %% post-login action
-        E -->|Post-Login Action injects<br/>`role` custom claim| E
+        B --> C[Auth0 Universal Login]
+        C --> D{User authenticates}
+        D --> E[Redirect with<br/>code + state]
+        E --> F[SPA exchanges code<br/>for tokens (PKCE)]
+        F --> G[Post-Login Action<br/>adds <i>role</i> claim]
     end
 
-    subgraph Token Store
-        E --> G[[ID token<br/>+ Access token<br/>(aud=http://localhost:8000)]]
-    end
+    %% ───────────  Tokens  ───────────
+    F --> H[(Access + ID tokens)]
 
-    %% Call normal user endpoint
-    G --> H[/SPA → GET /api/private<br/>Authorization: Bearer token/]
-    H --> I{{FastAPI<br/>VerifyToken}}
-    I -->|valid| J[200 JSON]
+    %% normal protected call
+    H --> I[/GET /api/private/]
+    I --> J{FastAPI<br/>VerifyToken}
+    J --> K[200 OK]
 
-    %% Call admin-protected endpoint
-    G --> K[/SPA → GET /api/private-scoped-admin/]
-    K --> L{{FastAPI<br/>verify scope<br/>AND `role` claim}}
-    L -->|role = admin| M[200 admin JSON]
-    L -->|otherwise| N[403 Forbidden]
-
-    %% Styling
-    classDef action fill:#e8f2ff,stroke:#3c7dd9,stroke-width:1px
-    class B,E,G,H,K action
+    %% admin-only call
+    H --> L[/GET /api/private-scoped-admin/]
+    L --> M{VerifyToken<br/>+ role = admin?}
+    M -->|yes| N[200 OK (admin JSON)]
+    M -->|no | O[403 Forbidden]
 ```
 ---
 

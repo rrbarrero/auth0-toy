@@ -84,15 +84,15 @@ UI updates: if the call succeeds the JSON is rendered; if it fails (403) an erro
 
 ### 2. Clone & install
 - git clone git@github.com:rrbarrero/auth0-toy.git
-- cd fastapi-auth0-poc
+- cd auth0-toy.git
 
 ### 3. Create two .env files
-<details> <summary>frontend/.env</summary>
+<details> <summary>fe/.env</summary>
 VITE_DOMAIN=dev-xxxxxxxx.eu.auth0.com
 VITE_CLIENT_ID=YOUR_SPA_CLIENT_ID
 VITE_AUDIENCE=http://localhost:8000
 VITE_SCOPE=openid profile email read:messages
-</details> <details> <summary>backend/.env</summary>
+</details> <details> <summary>be/.env</summary>
 AUTH0_DOMAIN=dev-xxxxxxxx.eu.auth0.com
 AUTH0_API_AUDIENCE=http://localhost:8000
 AUTH0_ISSUER=https://dev-xxxxxxxx.eu.auth0.com

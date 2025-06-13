@@ -7,7 +7,6 @@ A very small PoC that shows how to:
 * enforce **role-based access** via a custom claim inside the `access_token`
 
 ---
-
 ## Demo 📸
 
 | Admin view | Regular user view |
@@ -17,6 +16,43 @@ A very small PoC that shows how to:
 *If the logged user has the custom claim `http://localhost:3000/role=admin`, the “Admin Profile” card is displayed and the request to `/api/private-scoped-admin` succeeds.  
 Otherwise the card shows a friendly “Only admins can see this card.” message.*
 
+---
+
+## Flow
+```mermaid
+graph TD
+    subgraph Frontend (React SPA)
+        A[User clicks “Log in”] --> B[/Auth0Provider<br/>calls /authorize/]
+        B --> F[[Auth0<br/>Universal Login]]
+    end
+
+    subgraph Auth0
+        F --> C{User authenticates}
+        C -->|Success| D[Auth0 redirects back<br/>with  `code` + `state`]
+        D --> E[/SPA exchanges code<br/>for tokens (PKCE)/]
+        %% post-login action
+        E -->|Post-Login Action injects<br/>`role` custom claim| E
+    end
+
+    subgraph Token Store
+        E --> G[[ID token<br/>+ Access token<br/>(aud=http://localhost:8000)]]
+    end
+
+    %% Call normal user endpoint
+    G --> H[/SPA → GET /api/private<br/>Authorization: Bearer token/]
+    H --> I{{FastAPI<br/>VerifyToken}}
+    I -->|valid| J[200 JSON]
+
+    %% Call admin-protected endpoint
+    G --> K[/SPA → GET /api/private-scoped-admin/]
+    K --> L{{FastAPI<br/>verify scope<br/>AND `role` claim}}
+    L -->|role = admin| M[200 admin JSON]
+    L -->|otherwise| N[403 Forbidden]
+
+    %% Styling
+    classDef action fill:#e8f2ff,stroke:#3c7dd9,stroke-width:1px
+    class B,E,G,H,K action
+```
 ---
 
 ## Stack

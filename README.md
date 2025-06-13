@@ -83,7 +83,7 @@ UI updates: if the call succeeds the JSON is rendered; if it fails (403) an erro
 - An Auth0 tenant (free tier is fine)
 
 ### 2. Clone & install
-- git clone https://github.com/your-user/fastapi-auth0-poc.git
+- git clone git@github.com:rrbarrero/auth0-toy.git
 - cd fastapi-auth0-poc
 
 ### 3. Create two .env files

@@ -88,16 +88,16 @@ UI updates: if the call succeeds the JSON is rendered; if it fails (403) an erro
 
 ### 3. Create two .env files
 <details> <summary>fe/.env</summary>
-VITE_DOMAIN=dev-xxxxxxxx.eu.auth0.com
+<pre>VITE_DOMAIN=dev-xxxxxxxx.eu.auth0.com
 VITE_CLIENT_ID=YOUR_SPA_CLIENT_ID
 VITE_AUDIENCE=http://localhost:8000
-VITE_SCOPE=openid profile email read:messages
+VITE_SCOPE=openid profile email read:messages</pre>
 </details> <details> <summary>be/.env</summary>
-AUTH0_DOMAIN=dev-xxxxxxxx.eu.auth0.com
+<pre>AUTH0_DOMAIN=dev-xxxxxxxx.eu.auth0.com
 AUTH0_API_AUDIENCE=http://localhost:8000
 AUTH0_ISSUER=https://dev-xxxxxxxx.eu.auth0.com
 AUTH0_ALGORITHMS=RS256
-APP_NAME_NAMESPACE=http://localhost:3000    # same namespace used in the Action
+APP_NAME_NAMESPACE=http://localhost:3000    # same namespace used in the Action</pre>
 </details>
 
 ### 4. Run

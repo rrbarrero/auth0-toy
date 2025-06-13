@@ -21,12 +21,10 @@ Otherwise the card shows a friendly “Only admins can see this card.” message
 ## Flow
 ```mermaid
 graph TD
-    %% =====  SPA  =====
     subgraph SPA
         A[User clicks Log in] --> B[Auth0Provider to /authorize]
     end
 
-    %% =====  Auth0  =====
     subgraph Auth0
         B --> C[Auth0 Universal Login]
         C --> D{User authenticates}
@@ -35,15 +33,12 @@ graph TD
         F --> G[Post-login Action adds role claim]
     end
 
-    %% =====  Tokens  =====
     F --> H((Access & ID tokens))
 
-    %% normal protected call
     H --> I[GET&nbsp;/api/private]
     I --> J{FastAPI VerifyToken}
     J --> K[200 OK]
 
-    %% admin-only call
     H --> L[GET&nbsp;/api/private-scoped-admin]
     L --> M{VerifyToken and role admin?}
     M -->|yes| N["200 OK admin JSON"]
